@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  llm:
+    image: ollama/ollama:latest
+    volumes:
+      - ../models/ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+  api:
+    build: ../backend
+    environment:
+      - PYTHONUNBUFFERED=1
+      - OLLAMA_HOST=http://llm:11434
+    volumes:
+      - ../backend:/app
+    ports: [ "8000:8000" ]
+    command: flask --app api.app --debug run --host 0.0.0.0
+    depends_on: [ llm ]
+  ui:
+    build: ../frontend/ui-budget
+    volumes:
+      - ../frontend/ui-budget:/usr/src/app
+    ports: [ "3000:3000" ]
+    command: npm run dev
+    environment:
+      - NEXT_PUBLIC_API_BASE=http://localhost:8000
+    depends_on: [ api ]

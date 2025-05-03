@@ -1,0 +1,28 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Agente de presupuestos LangGraph+Flask"
+authors = [
+    {name = "Tu Nombre",email = "tu@correo.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10,<4.0.0"
+dependencies = [
+    "flask (>=2.3,<3.0)",
+    "langgraph (>=0.4.1,<0.5.0)",
+    "pydantic (>=2.11.4,<3.0.0)",
+    "python-dotenv (>=1.1.0,<2.0.0)"
+]
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0"
+ruff = "^0.11.7"
+black = "^25.1.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
