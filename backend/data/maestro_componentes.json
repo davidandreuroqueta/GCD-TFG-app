@@ -1,0 +1,17 @@
+{
+    "codigo_componente_standar": "Código identificador único del componente. ",
+    "descripcion": "Descripción detallada del componente. ",
+    "multiplicador_complejidad_simple": "Factor de ajuste del coste basado en que la dificultad de la pieza sea sencilla. Es decir habría que coger el coste una vez escalado y multiplicarlo por el valor de esta celda.. ",
+    "multiplicador_complejidad_compleja": "Factor de ajuste del coste basado en que la dificultad de la pieza sea compleja. Es decir habría que coger el coste una vez escalado y multiplicarlo por el valor de esta celda. ",
+    "tipo": "Clasificación general del componente (ej. Acabados, Componentes). Posibles valores: ['Metal Tubos', 'Operaciones', 'Cristal y derivados', 'Componentes eléctricos', 'Metal Acabados', 'Metal Corte y Mecanizado', 'Madera', 'Metal Planchas', 'Componentes', 'Embalaje'].",
+    "subgrupo": "Subclasificación dentro del tipo de componente. Posibles valores: ['Aluminio', 'Mecanizado', 'Metacrilato', 'Driver', 'Pintura metálica', 'Pintura epoxy', 'Cristal', 'Torneado Latón', 'Torneado Roble', 'Hierro', 'Bombillas', 'Cableado', 'Portalámparas', 'Horas', 'Latón', 'Cajas embalaje', 'Cantoneras', 'Protecciones', 'Caja de madera', 'Inox', nan, 'Pantalla', 'Alabastro'].",
+    "certificacion": "Certificación aplicable al componente si corresponde. ",
+    "coste": "Costo unitario del componente, si está disponible. ",
+    "lote_maximo_escalado": "Cantidad máxima del componente en un lote con coste escalado. ",
+    "coste_lote_maximo_escalado": "Coste del lote máximo escalado, ajustado por volumen. ",
+    "proveedor_principal": "Nombre del proveedor principal del componente. ",
+    "unidad_medida": "Precio por unidad de medida. Posibles valores: ['metro', 'unidades', 'm2', 'litro', 'kg'].",
+    "fecha_actualizacion": "Fecha de la última actualización del componente. ",
+    "comentarios_componente": "Notas adicionales sobre el componente. ",
+    "componente_standar": "Nombre asignado al componente, es la concatenación del código del artículo y la descripción. "
+}

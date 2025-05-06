@@ -3,17 +3,35 @@ name = "backend"
 version = "0.1.0"
 description = "Agente de presupuestos LangGraph+Flask"
 authors = [
-    {name = "Tu Nombre",email = "tu@correo.com"}
+    {name = "Tu Nombre", email = "tu@correo.com"}
 ]
-license = {text = "MIT"}
+license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.10,<4.0.0"
 dependencies = [
     "flask (>=2.3,<3.0)",
-    "langgraph (>=0.4.1,<0.5.0)",
-    "pydantic (>=2.11.4,<3.0.0)",
-    "python-dotenv (>=1.1.0,<2.0.0)"
+    "flask-cors (>=3.0,<4.0)",
+    "flask-jwt-extended (>=4.0,<5.0)",
+    "prometheus-flask-exporter (>=0.20,<1.0)",
+
+    # **Core de LangGraph**
+    "langgraph (>=0.4.1,<0.6.0)",
+
+    # **APIs de alto nivel para agentes React-style**
+    "langgraph-prebuilt (>=0.1.8,<0.2.0)",
+
+    # **LangChain base y extensiones**
+    "langchain-core (>=0.3.0,<1.0.0)",
+    "langchain-community (>=0.3.21,<1.0.0)",
+    "langchain-experimental (>=0.2.17,<1.0.0)",
+    "langchain-ollama (>=0.3.0,<1.0.0)",
+
+
+    # **Herramienta de ejecucion de código y datos**
+    "pandas (>=2.0,<3.0)",
+    "requests (>=2.28,<3.0.0)"
 ]
+
 
 [tool.poetry]
 package-mode = false
@@ -26,3 +44,11 @@ black = "^25.1.0"
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "B", "I", "T"]
+ignore = ["E203", "W503"]
