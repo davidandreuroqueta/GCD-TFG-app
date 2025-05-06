@@ -1,0 +1,66 @@
+# ====================
+# Entorno y variables
+# ====================
+# Archivos de entorno
+.env
+.env.*          # ignora .env.local, .env.development.local, etc.
+!.env.example   # excepto el ejemplo que sí se versiona
+
+# ====================
+# Node / Frontend
+# ====================
+# Dependencias
+frontend/ui-budget/node_modules/
+# Build outputs
+frontend/ui-budget/.next/
+frontend/ui-budget/out/
+# Logs
+frontend/ui-budget/npm-debug.log*
+frontend/ui-budget/yarn-debug.log*
+frontend/ui-budget/yarn-error.log*
+# Cachés de paquete
+frontend/ui-budget/.pnp/
+frontend/ui-budget/.pnp.js
+
+# ====================
+# Python / Backend
+# ====================
+# Cachés de Python
+backend/**/*.py[cod]
+backend/**/__pycache__/
+backend/**/.pytest_cache/
+# Entornos virtuales
+backend/.venv/
+backend/venv/
+# Distribución y empaquetado
+backend/build/
+backend/dist/
+backend/*.egg-info/
+backend/.eggs/
+backend/pip-wheel-metadata/
+# Coverage
+backend/.coverage
+backend/coverage.xml
+backend/htmlcov/
+
+# ====================
+# Docker / Compose
+# ====================
+# (normalmente no hay artefactos locales, pero si generas logs:)
+logs/
+*.log
+
+# ====================
+# IDEs y OS
+# ====================
+# VSCode
+.vscode/
+# IntelliJ / PyCharm
+.idea/
+*.iml
+# Mac
+.DS_Store
+# Windows
+Thumbs.db
+
+models/ollama/

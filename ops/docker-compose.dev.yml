@@ -6,6 +6,7 @@ services:
       - ../models/ollama:/root/.ollama
     ports:
       - "11434:11434"
+    gpus: all
   api:
     build: ../backend
     environment:
@@ -14,7 +15,7 @@ services:
     volumes:
       - ../backend:/app
     ports: [ "8000:8000" ]
-    command: flask --app api.app --debug run --host 0.0.0.0
+    command: flask --app api.app --debug run --host 0.0.0.0 --port 8000
     depends_on: [ llm ]
   ui:
     build: ../frontend/ui-budget
