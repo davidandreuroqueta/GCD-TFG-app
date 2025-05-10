@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from ollama import Client
 from langchain_core.messages import SystemMessage, AIMessage, HumanMessage
-from my_app.utils.state import State
+from my_langgraph.utils.state import State
 
 load_dotenv()
 

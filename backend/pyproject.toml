@@ -1,5 +1,5 @@
 [project]
-name = "my-app"
+name = "my-langgraph"
 version = "0.1.0"
 description = "Proyecto de ejemplo con LangGraph + Ollama"
 requires-python = ">=3.8"
