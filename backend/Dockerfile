@@ -1,21 +1,27 @@
-# backend/Dockerfile
-FROM python:3.10-slim-bullseye
+# langgraph/Dockerfile
+FROM python:3.11-slim
+
+# 1) Evitamos pyc y buffering
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
 
 WORKDIR /app
 
-ENV PIP_ROOT_USER_ACTION=ignore
+# 2) Copiamos metadatos y código completo para que pip install -e encuentre el paquete
+COPY pyproject.toml langgraph.json ./
+COPY . .
 
-# Instala Poetry y dependencias
-COPY pyproject.toml poetry.lock /app/
-RUN pip install --no-cache-dir poetry \
- && poetry config virtualenvs.create false \
- && poetry install --only main,dev
+# 3) Instalamos deps del sistema, nuestro paquete editable y el CLI, suprimiendo el warning
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install --upgrade pip --root-user-action=ignore && \
+    pip install -e . --root-user-action=ignore && \
+    pip install "langgraph-cli[inmem]" --root-user-action=ignore
 
-# Copia el resto del código
-COPY . /app
+# 4) Exponemos el puerto de LangGraph
+EXPOSE 2024
 
-# Expone el puerto
-EXPOSE 8000
-
-# Comando por defecto
-CMD ["flask", "--app", "api.app", "--debug", "run", "--host", "0.0.0.0", "--port", "8000"]
+# 5) Arrancamos con el CLI instalado, no con python -m
+ENTRYPOINT ["langgraph", "dev"]
