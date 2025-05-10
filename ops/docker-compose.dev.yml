@@ -4,7 +4,7 @@ services:
   models:
     build: ../models
     volumes:
-      - ./models/ollama:/root/.ollama
+      - ../models/ollama:/root/.ollama
     ports:
       - "11434:11434"
     gpus: all
