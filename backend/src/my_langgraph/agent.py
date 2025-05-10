@@ -58,7 +58,7 @@ from langchain_core.messages import SystemMessage       # :contentReference[oaic
 
 
 def react_agent():
-    model = os.getenv("OLLAMA_MODEL", "llama3.1")
+    model = os.getenv("OLLAMA_MODEL", "qwen3:4b")
     llm = ChatOllama(
         model=model,
         temperature=0,

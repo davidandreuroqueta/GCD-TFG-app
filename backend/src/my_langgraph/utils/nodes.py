@@ -6,9 +6,11 @@ from my_langgraph.utils.state import State
 
 load_dotenv()
 
-# Inicializa el cliente apuntando al servidor local de Ollama
-ollama_client = Client(host=os.getenv("OLLAMA_URL"))
-MODEL_NAME = os.getenv("OLLAMA_MODEL", "llama3.1")
+# model = os.getenv("OLLAMA_MODEL", "qwen3:4b")
+# llm = ChatOllama(
+#     model=model,
+#     temperature=0,
+# )
 
 # Mensaje de sistema para el modelo
 system_message = SystemMessage(content="Eres un asistente útil. Responde de manera concisa.")

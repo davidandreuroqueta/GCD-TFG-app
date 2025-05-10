@@ -64,5 +64,5 @@ logs/
 Thumbs.db
 
 models/ollama/
-*.egg-info/
 .langgraph_api/
+*.egg-info
