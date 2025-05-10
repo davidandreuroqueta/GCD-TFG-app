@@ -2,9 +2,9 @@ from typing import Literal
 from langchain_core.messages import BaseMessage
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode, create_react_agent
-from my_app.utils.state import State
-from my_app.utils.nodes import chat_node
-from my_app.utils.tools import multiply
+from my_langgraph.utils.state import State
+from my_langgraph.utils.nodes import chat_node
+from my_langgraph.utils.tools import multiply
 
 
 def build_graph():
