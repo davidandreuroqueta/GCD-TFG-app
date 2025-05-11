@@ -5,6 +5,7 @@ services:
     build: ../models
     volumes:
       - ../models/ollama:/root/.ollama
+      - ../models/entrypoint.sh:/entrypoint.sh
     ports:
       - "11434:11434"
     gpus: all
