@@ -112,3 +112,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 # ====================
+
+pull_models.sh

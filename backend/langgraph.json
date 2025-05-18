@@ -1,8 +1,9 @@
 {
   "dependencies": ["./src/my_langgraph"],
   "graphs": {
-    "agent": "./src/my_langgraph/agent.py:graph",
-    "agent2": "./src/my_langgraph/agent.py:graph2"
+    "graph_monolith_llama": "./src/my_langgraph/agent.py:graph_monolith_llama",
+    "graph_monolith_qwen": "./src/my_langgraph/agent.py:graph_monolith_qwen",
+    "graph_dual_mix": "./src/my_langgraph/agent.py:graph_dual_mix"
   },
   "env": ".env"
 }
