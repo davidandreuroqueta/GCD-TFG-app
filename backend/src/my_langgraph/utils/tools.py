@@ -43,27 +43,45 @@ def query_maestro(query: Dict[str, Any]) -> str:
     return resultado.to_json(orient="records")
 
 # --- 4) Tool: cálculo de costes -----------------------------------
-def compute_cost(row: Dict[str, Any], n: int, medida: float, complejidad: str | None = None) -> float:
+def calcular_coste_unitario(coste: float,
+                             lote_maximo_escalado: int,
+                             coste_lote_maximo_escalado: float,
+                             n: int,
+                             multiplicador_simple: float,
+                             multiplicador_complejidad: float,
+                             dificultad: str = None) -> float:
     """
-    Aplica la lógica de precios escalados y complejidad.
-    `row` es un dict con las columnas del maestro (coste, coste_lote_maximo_escalado, lote_maximo_escalado, unidad_medida, multiplicador_complejidad_*).
+    Calcula el coste unitario final aplicando el escalado y el multiplicador de complejidad.
+    Parámetros:
+      coste: coste unitario base.
+      lote_maximo_escalado: umbral para coste mínimo.
+      coste_lote_maximo_escalado: coste unitario a partir de lote máximo.
+      n: número de unidades.
+      multiplicador_simple: factor para piezas simples.
+      multiplicador_complejidad: factor para piezas complejas.
+      dificultad: 'simple' o 'compleja'.
+    Retorna:
+      Coste unitario ajustado.
     """
-
-    coste = row["coste"]
-    coste_lote_max = row["coste_lote_maximo_escalado"]
-    lote_max = row["lote_maximo_escalado"]
-
-    if n == 1:
-        coste_unit = coste
-    elif 1 < n < lote_max:
-        coste_unit = coste + (n - 1) * ((coste_lote_max - coste) / (lote_max - 1))
-    else:
-        coste_unit = coste_lote_max
-
-    subtotal = coste_unit * medida * n
-
-    if complejidad and complejidad.lower() in ("simple", "compleja"):
-        mult = row[f"multiplicador_complejidad_{complejidad.lower()}"]
-        subtotal *= mult
-
-    return round(subtotal, 2)
+    def calcular_coste_unitario_escalado(coste: float, lote_maximo_escalado: int, coste_lote_maximo_escalado: float, n: int) -> float:
+        """
+        Calcula el coste unitario escalado según el número de unidades (n), usando la lógica de precios escalados:
+        - Si n == 1: coste base.
+        - Si 1 < n < lote_maximo_escalado: coste + (n-1)*((coste_lote_maximo_escalado - coste)/(lote_maximo_escalado-1)).
+        - Si n >= lote_maximo_escalado: coste_lote_maximo_escalado.
+        """
+        if n == 1:
+            return coste
+        if 1 < n < lote_maximo_escalado:
+            return coste + (n - 1) * ((coste_lote_maximo_escalado - coste) / (lote_maximo_escalado - 1))
+        return coste_lote_maximo_escalado
+    # Escalado por cantidad
+    coste_unitario = calcular_coste_unitario_escalado(coste, lote_maximo_escalado, coste_lote_maximo_escalado, n)
+    # Ajuste por complejidad
+    if not dificultad:
+        return coste_unitario
+    if dificultad == 'simple':
+        return coste_unitario * multiplicador_simple
+    if dificultad == 'compleja':
+        return coste_unitario * multiplicador_complejidad
+    return coste_unitario

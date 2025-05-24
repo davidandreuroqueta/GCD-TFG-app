@@ -9,13 +9,14 @@ from langchain_core.messages import SystemMessage       # :contentReference[oaic
 
 from my_langgraph.utils.tools import python_repl
 from my_langgraph.utils.utils import get_promt
+from my_langgraph.utils.models import ChatOpenRouter
 
 
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
 
 def create_graph_monolith(
     model_name: str,
     model_prompt: str,
+    ollama: bool = True,
 ) -> Any:
     if not model_name:
         raise ValueError("Model name must be provided.")
@@ -24,11 +25,17 @@ def create_graph_monolith(
 
     model_prompt = get_promt(model_prompt)
     
-    llm = ChatOllama(
-        base_url=OLLAMA_URL,
-        model=model_name,
-        temperature=0,
-    )
+    if ollama:
+        OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
+        llm = ChatOllama(
+            base_url=OLLAMA_URL,
+            model=model_name,
+            temperature=0,
+        )
+    else:
+        llm = ChatOpenRouter(
+            model_name=model_name
+        )
     # Create the agent
     agent = create_react_agent(
         llm,

@@ -9,8 +9,9 @@ from langgraph.prebuilt import create_react_agent
 from langgraph.graph.message import add_messages
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
+from langgraph_swarm import create_swarm, create_handoff_tool
 
-from my_langgraph.utils.tools import python_repl  # nuestro REPL + DataFrame
+from my_langgraph.utils.tools import python_repl, calcular_coste_unitario # nuestro REPL + DataFrame
 from my_langgraph.utils.utils import get_promt
 
 # ---------------------------------------------------------------------------
@@ -21,12 +22,12 @@ class DualState(TypedDict, total=False):
     task: str | None                         # orden en lenguaje natural
     result: str | None                       # respuesta codificada del coder
 
+
+
 # ---------------------------------------------------------------------------
 # 2. Modelo LLM
 # ---------------------------------------------------------------------------
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
-MODEL_MANAGER = os.getenv("OLLAMA_MANAGER", "llama3:8b-instruct")
-MODEL_CODER   = os.getenv("OLLAMA_CODER", "qwen3:8b-instruct")
 
 
 def create_graph_dual(manager_llm_name, coder_llm_name, manager_prompt, coder_prompt) -> Any:
@@ -47,85 +48,36 @@ def create_graph_dual(manager_llm_name, coder_llm_name, manager_prompt, coder_pr
         temperature=0,
     )
 
-    # ---------------------------------------------------------------------------
-    # 3. Nodo Manager (Conversacional / Project-Manager)
-    # ---------------------------------------------------------------------------
-
+    transfer_to_coder = create_handoff_tool(
+        agent_name="coder_agent",
+        description="Transfer user to the coding assistant.",
+    )
+    transfer_to_manager = create_handoff_tool(
+        agent_name="manager_agent",
+        description="Transfer user to the manager assistant.",
+    )   
+    
     manager_agent = create_react_agent(
         manager_llm,
-        tools=[python_repl],  # se registra para que pueda emitir tool_call
+        tools=[transfer_to_coder],  # se registra para que pueda emitir tool_call
         prompt=manager_prompt,
         name="manager_agent",
     )
 
-    def manager_node(state: DualState) -> DualState:
-        """Ejecuta el agente conversacional y extrae la tool_call (si existe)."""
-        output = manager_agent.invoke({"messages": state["messages"]})
-        state["messages"] += output["messages"]
-
-        # Si hubo llamada a herramienta, guardar la task
-        last_ai = output["messages"][-1]
-        tcalls = getattr(last_ai, "tool_calls", None)
-        if tcalls:
-            state["task"] = tcalls[0]["args"]["query"]
-        else:
-            state["task"] = None
-        return state
-
-    # ---------------------------------------------------------------------------
-    # 4. Nodo Coder (Python REPL executor)
-    # ---------------------------------------------------------------------------
-
     coder_agent = create_react_agent(
         coder_llm,
-        tools=[python_repl],
+        tools=[python_repl, calcular_coste_unitario, transfer_to_manager],
         prompt=coder_prompt,
         name="coder_agent",
     )
 
-    def coder_node(state: DualState) -> DualState:
-        """Ejecuta python_repl con la tarea y guarda el resultado."""
-        query = state["task"]
-        if query:
-            tool_call = f"python_repl({query})"
-            output = coder_agent.invoke(
-                {
-                    "messages": state["messages"]
-                    + [
-                        {
-                            "type": "tool",
-                            "name": "python_repl",
-                            "args": {"query": query},
-                        }
-                    ]
-                }
-            )
-            state["messages"] += output["messages"]
-            state["result"] = output["messages"][-1].content
-            # Limpiar para el siguiente ciclo
-            state["task"] = None
-        return state
-
-    # ---------------------------------------------------------------------------
-    # 5. Grafo con edge condicional
-    # ---------------------------------------------------------------------------
-    g = StateGraph(DualState)
-    g.add_node("manager", manager_node)
-    g.add_node("coder", coder_node)
-    g.set_entry_point("manager")
-
-    def needs_coder(state: DualState) -> bool:
-        return state["task"] is not None
-
-    g.add_conditional_edges(
-        "manager",
-        needs_coder,
-        {True: "coder", False: END},
+    swarm = create_swarm(
+        agents=[manager_agent, coder_agent],
+        default_active_agent="manager_agent",
     )
-    g.add_edge("coder", "manager")
 
     # workflow = g.compile()
-    return g.compile()
+    return swarm.compile()
 
 
 # ---------------------------------------------------------------------------

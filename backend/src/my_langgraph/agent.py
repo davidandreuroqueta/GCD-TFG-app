@@ -46,4 +46,15 @@ graph_dual_mix = create_graph_dual(
     manager_prompt="graph_dual_manager_v1",
     coder_prompt="graph_dual_coder_v1",
 )
+
+graph_monolith_claude = create_graph_monolith(
+    model_name="anthropic/claude-3.7-sonnet",
+    model_prompt="graph_monolith_LLM",
+    ollama=False
+)
+graph_monolith_gemini = create_graph_monolith(
+    model_name="google/gemini-2.5-flash-preview-05-20",
+    model_prompt="graph_monolith_gemini",
+    ollama=False
+)
 # graph_monolith_qwen = create_graph_monolith(model_name="qwen3:8b")
