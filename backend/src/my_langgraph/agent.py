@@ -57,4 +57,9 @@ graph_monolith_gemini = create_graph_monolith(
     model_prompt="graph_monolith_gemini",
     ollama=False
 )
+graph_monolith_mistral = create_graph_monolith(
+    model_name="mistralai/mistral-large-2411",
+    model_prompt="graph_monolith_mistral",
+    ollama=False
+)
 # graph_monolith_qwen = create_graph_monolith(model_name="qwen3:8b")

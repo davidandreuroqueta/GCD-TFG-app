@@ -113,4 +113,5 @@ yarn-error.log*
 next-env.d.ts
 # ====================
 
-pull_models.sh
+venv*
+backend/data/*

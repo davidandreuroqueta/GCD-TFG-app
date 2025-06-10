@@ -4,13 +4,53 @@ from typing import Dict, Any
 import os
 
 # --- 1) Carga el DataFrame global ---------------------------------
-MAESTRO_CSV_PATH = os.getenv("MAESTRO_CSV_PATH", None)
-print(os.getcwd())
-if MAESTRO_CSV_PATH is None:
-    raise ValueError("MAESTRO_CSV_PATH no está definido. Por favor, establece la variable de entorno.")
-if not os.path.exists(MAESTRO_CSV_PATH):
-    raise FileNotFoundError(f"El archivo {MAESTRO_CSV_PATH} no existe. Por favor, verifica la ruta.")
-df = pd.read_csv(MAESTRO_CSV_PATH)
+def get_csv_path():
+    """
+    Obtiene la ruta del archivo CSV maestro con manejo inteligente de rutas.
+    
+    Returns:
+        str: Ruta absoluta al archivo CSV
+    
+    Raises:
+        FileNotFoundError: Si el archivo no existe en ninguna de las rutas probadas
+    """
+    # Obtener la ruta desde variable de entorno
+    csv_path = os.getenv("MAESTRO_CSV_PATH")
+    # Obtener directorio raíz del proyecto (4 niveles arriba desde este archivo)
+    current_dir = os.path.dirname(__file__)
+    project_root = os.path.abspath(os.path.join(current_dir, "..", "..", "..", ".."))
+    
+    
+    if csv_path:
+        # Si la ruta es absoluta, usarla tal como está
+        if os.path.isabs(csv_path):
+            resolved_path = csv_path
+        else:
+            # Si es relativa, resolverla desde la raíz del proyecto
+            resolved_path = os.path.join(project_root, csv_path)
+        
+        if os.path.exists(resolved_path):
+            return resolved_path
+    
+    # Ruta por defecto: backend/data/maestro_componentes.csv
+    default_path = os.path.join(project_root, "backend", "data", "maestro_componentes.csv")
+    
+    if os.path.exists(default_path):
+        return default_path
+    
+    # Si ninguna ruta funciona, lanzar error
+    raise FileNotFoundError(
+        f"No se pudo encontrar el archivo CSV en ninguna de las siguientes rutas:\n"
+        f"- Variable de entorno MAESTRO_CSV_PATH: {csv_path if csv_path else 'No definida'}\n"
+        f"- Ruta por defecto: {default_path}\n"
+        f"Por favor, verifica que el archivo exista o configura la variable de entorno MAESTRO_CSV_PATH."
+    )
+
+# Obtener la ruta del archivo CSV
+csv_path = get_csv_path()
+print(f"Cargando CSV desde: {csv_path}")
+
+df = pd.read_csv(csv_path)
 
 # --- 2) Tool: REPL para inspeccionar el DataFrame -----------------
 python_repl = PythonAstREPLTool(

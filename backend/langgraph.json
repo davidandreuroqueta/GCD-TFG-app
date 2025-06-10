@@ -5,7 +5,8 @@
     "graph_monolith_qwen": "./src/my_langgraph/agent.py:graph_monolith_qwen",
     "graph_dual_mix": "./src/my_langgraph/agent.py:graph_dual_mix",
     "graph_monolith_claude": "./src/my_langgraph/agent.py:graph_monolith_claude",
-    "graph_monolith_gemini": "./src/my_langgraph/agent.py:graph_monolith_gemini"
+    "graph_monolith_gemini": "./src/my_langgraph/agent.py:graph_monolith_gemini",
+    "graph_monolith_mistral": "./src/my_langgraph/agent.py:graph_monolith_mistral"
   },
   "env": ".env"
 }
